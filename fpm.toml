@@ -1,0 +1,21 @@
+name = "my_odepack_demo"
+version = "1.0.0"
+license = "license"
+author = "Quinn Pratt"
+copyright = "Copyright 2023, Quinn Pratt"
+[build]
+auto-executables = true
+auto-tests = true
+auto-examples = true
+[install]
+library = false
+[dependencies]
+odepack.git = "https://github.com/Nicholaswogan/odepack"
+odepack.branch = "main"
+[dev-dependencies]
+test-drive.git = "https://github.com/fortran-lang/test-drive"
+test-drive.tag = "v0.4.0"
+[[executable]]
+name = "my_odepack_demo"
+[executable.dependencies]
+M_CLI2.git = "https://github.com/urbanjost/M_CLI2"
