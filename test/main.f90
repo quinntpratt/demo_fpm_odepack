@@ -15,7 +15,8 @@ contains
     subroutine collect_demo(testsuite)
         !> Collection of tests
         type(unittest_type), allocatable, intent(out) :: testsuite(:)
-        testsuite = [new_unittest("linspace", test_linspace)]
+        testsuite = [new_unittest("linspace", test_linspace), &
+            new_unittest("read_namelist",test_read_namelist)]
     end subroutine collect_demo
 
     !> Check linspace
@@ -35,18 +36,42 @@ contains
     subroutine test_read_namelist(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
+        !> Vars for the test,
+        integer :: NEQ, N, fid, rc
+        real(dp) :: t0, tf, rtol, atol(1), thr
+        logical :: rel
+        !> namelist declaration before value assignment
+        namelist /PARAMS/ NEQ, N, t0, tf
+        namelist /NUMERICAL/ rtol, atol
+        !> default values for namelist items.
+        NEQ = 3
+        N = 3001
+        t0 = 0.0
+        tf = 100.0
+        rtol = 1.0E-8
+        atol = 1.0E-8
+        !> open a new file "input.nml"; this will be the default.
+        open (newunit=fid,action='write', file="input.nml", iostat=rc)
+        write (nml=PARAMS,unit=fid)
+        write (nml=NUMERICAL,unit=fid)
+        close (unit=fid)
+        !> test the subroutine,
+        call read_namelist("input.nml",NEQ, N, t0, tf, rtol, atol)
+        !> simple check that the integers are correct,
+        call check (error, N, 3001)
+
     end subroutine test_read_namelist
+
+    subroutine test_main_program(error)
+        !> Error handling
+        type(error_type), allocatable, intent(out) :: error
+    end subroutine test_main_program
 
     !> Check write_output
     subroutine test_write_output(error)
         !> Error handling
         type(error_type), allocatable, intent(out) :: error
     end subroutine test_write_output
-
-    subroutine test_main_program(error)
-        !> Error handling
-        type(error_type), allocatable, intent(out) :: error
-    end subroutine test_main_program
 
 end module test_demo
 
